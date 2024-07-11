@@ -9,7 +9,7 @@ const skipBtn = player.querySelectorAll(".player__button");
 
 
 
-function toggle() {
+function togglePlay() {
     const method = video.paused ? "play" : "pause";
     video[method]();
 }
@@ -28,11 +28,37 @@ function rangeHandler() {
     video[this.name] = this.value;
 }
 
+function progressHandler() {
+    const percent = (video.currentTime/video.duration)*100;
+    progressBar.style.flexBasis = `${percent}%`;
+}
+
+function clickBar(e) {
+    const position = (e.offsetX/progress.offsetWidth)*video.duration;
+    video.currentTime = position
+}
 
 
 
+video.addEventListener("click",togglePlay)
+video.addEventListener("play",buttonUpdate)
+video.addEventListener("pause",buttonUpdate)
+video.addEventListener("timeupdate",progressHandler)
+
+toggle.addEventListener("click",togglePlay)
+skipBtn.forEach(b => b.addEventListener("click",skip))
+range.forEach(r => r.addEventListener("change",rangeHandler))
+range.forEach(r => r.addEventListener("mousemove",rangeHandler))
 
 
+// progress.addEventListener("click",clickBar)
+// progress.addEventListener("mousemove",mousedown && clickBar)
+
+let mousedown = false;
+progress.addEventListener('click', scrub);
+progress.addEventListener('mousemove', (e) => mousedown && scrub(e));
+progress.addEventListener('mousedown', () => mousedown = true);
+progress.addEventListener('mouseup', () => mousedown = false);
 
 
 
